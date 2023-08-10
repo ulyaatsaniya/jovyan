@@ -1,17 +1,5 @@
 import streamlit as st
 import google.generativeai as palm
-from src.utils.MultiPage import MultiPage
-from src.apps import linkedin, instagram, twitter, email
-
-
-app = MultiPage()
-
-app.add_app('LinkedIn Post',linkedin.app)
-app.add_app('Instagram Post',instagram.app)
-app.add_app('Tweet Post',twitter.app)
-app.add_app('Email Marketing',email.app)
-
-app.run()
 
 # Set the background colors
 st.markdown(
@@ -53,8 +41,10 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Title
-st.title("AI Marketing QnA")
+# Display the image and title using st.image and st.markdown
+st.image("https://imgur.com/MZm2T4E.png", width=50)
+st.title("LinkedIn Marketing QnA")
+
 
 # Top right corner image container
 st.markdown(
@@ -72,39 +62,6 @@ def open_app(app_name):
 
 # Sidebar
 with st.sidebar:
-    st.header("Social Media")
-    
-    # Define a dictionary for social media icons
-    social_media_icons = {
-        "LinkedIn Post": "https://imgur.com/MZm2T4E.png",
-        "Instagram Post": "https://imgur.com/DboIm3A.png",
-        "Tweet Post": "https://imgur.com/OkDuRDC.png",
-        "Email Marketing": "https://imgur.com/sfoYLb2.png"
-    }
-    if st.sidebar.button("LinkedIn Post"):
-        open_app("LinkedIn Post")
-    if st.sidebar.button("Instagram Post"):
-        open_app("Instagram Post")
-    if st.sidebar.button("Tweet Post"):
-        open_app("Tweet Post")
-    if st.sidebar.button("Email Marketing"):
-        open_app("Email Marketing")
-
-    # # Create links to each social media page with icons
-    # for social_media, icon_url in social_media_icons.items():
-    #     app_function = get_social_media_app(social_media)
-    #     if app_function:
-    #         # Set the query parameters to navigate to the selected app
-    #         app_params = {"page": social_media}
-    #         st.experimental_set_query_params(**app_params)
-        
-    #     st.markdown(
-    #         f'<a href="#" style="display: flex; align-items: center; text-decoration: none; color: inherit;">'
-    #         f'<img src="{icon_url}" style="width: 30px; margin-top: 5px; margin-right: 5px;">'
-    #         f'{social_media}'
-    #         '</a>',
-    #         unsafe_allow_html=True
-    #     )
 
     palm_api_key = st.text_input('PaLM API Key',
                                  key='palm_api_key',
@@ -158,12 +115,3 @@ with col1:
             # Clear the text input after sending a message
             st.session_state.prev_prompt = True
             prompt = ""  # Clear the prompt
-
-            # Not used OpenAI, replaced by PaLM
-            # response = openai.ChatCompletion.create(
-            #     model="gpt-3.5-turbo",
-            #     messages=user_messages
-            # )
-            # msg = response.choices[0].message
-            # st.session_state.messages.append(msg)
-            # st.chat_message("assistant").write(msg["content"])

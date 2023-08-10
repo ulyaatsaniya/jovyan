@@ -41,8 +41,10 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Title
-st.title("LinkedIn Marketing QnA")
+# Display the image and title using st.image and st.markdown
+st.image("https://imgur.com/sfoYLb2.png", width=50)
+st.title("Email Marketing QnA")
+
 
 # Top right corner image container
 st.markdown(
@@ -53,21 +55,18 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# Create functions to open each social media app
+def open_app(app_name):
+    st.experimental_set_query_params(page=app_name)
+
+
 # Sidebar
 with st.sidebar:
-    st.header("Social Media")
-    # LinkedIn Post option
-    st.markdown(
-        "<div class='block-container'>"
-        "<div style='display: flex; align-items: center;'>"
-        "<img src='https://imgur.com/MZm2T4E.png' style='width:20px; margin-right: 10px;'>"
-        "Linkedin Post"
-        "</div>"
-        "</div>",
-        unsafe_allow_html=True
-    )
-    # Other social media options...
-    # Instagram, Tweet, Email Marketing
+
+    palm_api_key = st.text_input('PaLM API Key',
+                                 key='palm_api_key',
+                                 help="Don't have API Key? [Join the waitlist](https://developers.generativeai.google/products/palm) or Generate using your Google Cloud project"
+                                 )
 
 # Set up the layout
 col1, col2 = st.columns([3, 1])  # Adjust column widths as needed
@@ -94,24 +93,25 @@ with col1:
     
     # Process user input and interact with the chatbot
     if prompt:
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        st.chat_message("user").write(prompt)
-        
-        # Chatbot response (you need to replace this with actual PaLM interaction)
-        response = "Chatbot response goes here"
-        
-        msg = {"role": "assistant", "content": response}
-        st.session_state.messages.append(msg)
-        st.chat_message("assistant").write(msg["content"])
+        if not palm_api_key:
+            st.info("Please add your PaLM API key to continue.")
+        else:
+            try:
+                palm.configure(api_key=palm_api_key)
+            except Exception as e:
+                st.info("Please pass a valid API key")
+            st.session_state.messages.append({"role": "user", "content": prompt})
+            st.chat_message("user").write(prompt)
+            
+            # Create a message for the PaLM API
+            user_messages = [{"role": "system", "content": "You are a marketing consultant."}]
+            user_messages.extend(st.session_state.messages)
+            
+            response = palm.chat(messages=prompt)
+            msg = {"role": "assistant", "content": response.last}
+            st.session_state.messages.append(msg)
+            st.chat_message("assistant").write(msg["content"])
 
-        # Clear the text input after sending a message
-        st.session_state.prev_prompt = True
-        prompt = ""  # Clear the prompt
-
-# Display empty space in the right column
-with col2:
-    pass  # Add any content you want in the right column
-
-# This line ensures that the app runs when you run the script
-if __name__ == "__main__":
-    st.set_page_config(page_title="LinkedIn Marketing QnA")
+            # Clear the text input after sending a message
+            st.session_state.prev_prompt = True
+            prompt = ""  # Clear the prompt
