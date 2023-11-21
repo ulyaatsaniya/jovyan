@@ -48,7 +48,6 @@ st.title("💬AI Marketing QnA")
 st.markdown(
     "<div class='top-right-image-container'>"
     "<img src='https://imgur.com/sxSdMX2.png' width='60'>"
-    "<img src='https://imgur.com/sxSdMX2.png' width='60'>"
     "<img src='https://imgur.com/22eWfGo.png' width='80'>"
     "</div>",
     unsafe_allow_html=True
